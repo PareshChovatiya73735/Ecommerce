@@ -1,0 +1,88 @@
+﻿@model Ecommerce.Models.mvcProductModel
+
+@{
+    ViewBag.Title = "AddOrEditProduct";
+}
+
+
+@using (Html.BeginForm("AddOrEditProduct", "Product", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ProductId)
+
+        <div class="row">
+            <div class="form-group">
+                <h4>Product</h4>
+                <hr />
+
+                <div class="col-md-10">
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProdName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProdName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProdName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProdDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.ProdDescription, 5, 50, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProdDescription, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.ProdCatId, new SelectList(Model.CategoryList, "ProdCatId", "CategoryName"), new { htmlAttributes = new {style="width:500px", @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <h4>Attributes</h4>
+                <hr />
+
+                <div class="col-md-10">
+
+                </div>
+            </div>
+            <div id="AttributeListPartial">
+                @Html.Partial("_AttributeList", Model);
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "ProductList")
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $("#ProdCatId").change(function (e) {
+                var val = $(this).val();
+                $("#AttributeListPartial").load("/Product/AttributeList/" + val);
+            });
+        });
+
+
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+}

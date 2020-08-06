@@ -1,0 +1,70 @@
+﻿@model PagedList<Ecommerce.Models.mvcProductModel>
+
+@{
+    ViewBag.Title = "ProductList";
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<h2>Product List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddOrEditProduct")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().ProdName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().CategoryName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().ProdDescription)
+        </th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProdName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProdDescription)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "AddOrEditProduct", new { id = item.ProductId }) |
+                <a onclick="Delete(@item.ProductId)">Delete</a>
+
+            </td>
+        </tr>
+    }
+
+</table>
+@Html.PagedListPager(Model, i => Url.Action("ProductList", "Product", new { i }))
+
+@section scripts{
+    <script>
+
+        $(function () {
+            var successMessage = '@TempData["successMessage"]';
+            if (successMessage != '') {
+                alertify.success(successMessage);
+            }
+        });
+
+        function Delete(id) {
+            alertify.confirm("Delete!", "Are you sure to delete?", new function () {
+                window.location.href = '@Url.Action("DeleteProduct", "Product")/' + id;
+            }, null);
+
+        }
+    </script>
+
+}
